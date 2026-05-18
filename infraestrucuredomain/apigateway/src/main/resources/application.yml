@@ -1,0 +1,27 @@
+server:
+  port: 8080
+
+# ESTO OBLIGA A SPRING A APAGAR TOMCAT Y ARRANCAR NETTY DE INMEDIATO:
+spring:
+  main:
+    web-application-type: reactive
+  cloud:
+    gateway:
+      routes:
+        - id: gestion_academica_route
+          uri: lb://businessdomain-gestion-academica
+          predicates:
+            - Path=/api/v1/academica/**
+          filters:
+            - AuthenticationFilterinig
+        - id: asistencia_conducta_route
+          uri: lb://businessdomain-asistencia-conducta
+          predicates:
+            - Path=/api/v1/conducta/**
+          filters:
+            - AuthenticationFilterinig
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
