@@ -1,21 +1,31 @@
 server:
   port: 8080
 
-# ESTO OBLIGA A SPRING A APAGAR TOMCAT Y ARRANCAR NETTY DE INMEDIATO:
 spring:
   main:
     web-application-type: reactive
   cloud:
     gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:5173"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+            allowedHeaders: "*"
       routes:
         - id: gestion_academica_route
-          uri: lb://businessdomain-gestion-academica
+          uri: lb://BUSINESSDOMAIN-GESTION-ACADEMICA
           predicates:
             - Path=/api/v1/academica/**
           filters:
             - AuthenticationFilterinig
+            
         - id: asistencia_conducta_route
-          uri: lb://businessdomain-asistencia-conducta
+          uri: lb://BUSINESSDOMAIN-ASISTENCIA-CONDUCTA 
           predicates:
             - Path=/api/v1/conducta/**
           filters:
