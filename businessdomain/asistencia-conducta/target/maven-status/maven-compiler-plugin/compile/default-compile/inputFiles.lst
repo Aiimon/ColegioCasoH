@@ -1,9 +1,0 @@
-C:\Users\aiimo\OneDrive\Escritorio\colegio-parent\businessdomain\asistencia-conducta\src\main\java\cl\cbo\asistencia_conducta\AsistenciaConductaApplication.java
-C:\Users\aiimo\OneDrive\Escritorio\colegio-parent\businessdomain\asistencia-conducta\src\main\java\cl\cbo\asistencia_conducta\controller\ConductaController.java
-C:\Users\aiimo\OneDrive\Escritorio\colegio-parent\businessdomain\asistencia-conducta\src\main\java\cl\cbo\asistencia_conducta\domain\Anotacion.java
-C:\Users\aiimo\OneDrive\Escritorio\colegio-parent\businessdomain\asistencia-conducta\src\main\java\cl\cbo\asistencia_conducta\domain\AnotacionNegativa.java
-C:\Users\aiimo\OneDrive\Escritorio\colegio-parent\businessdomain\asistencia-conducta\src\main\java\cl\cbo\asistencia_conducta\domain\AnotacionPositiva.java
-C:\Users\aiimo\OneDrive\Escritorio\colegio-parent\businessdomain\asistencia-conducta\src\main\java\cl\cbo\asistencia_conducta\entities\RegistroConducta.java
-C:\Users\aiimo\OneDrive\Escritorio\colegio-parent\businessdomain\asistencia-conducta\src\main\java\cl\cbo\asistencia_conducta\factory\AnotacionFactory.java
-C:\Users\aiimo\OneDrive\Escritorio\colegio-parent\businessdomain\asistencia-conducta\src\main\java\cl\cbo\asistencia_conducta\repositories\RegistroConductaRepository.java
-C:\Users\aiimo\OneDrive\Escritorio\colegio-parent\businessdomain\asistencia-conducta\src\main\java\cl\cbo\asistencia_conducta\services\ConductaService.java

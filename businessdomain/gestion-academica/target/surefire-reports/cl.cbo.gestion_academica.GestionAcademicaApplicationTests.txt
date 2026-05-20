@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: cl.cbo.gestion_academica.GestionAcademicaApplicationTests
--------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 7.116 s -- in cl.cbo.gestion_academica.GestionAcademicaApplicationTests
