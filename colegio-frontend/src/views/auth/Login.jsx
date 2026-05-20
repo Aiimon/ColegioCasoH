@@ -27,37 +27,30 @@ export default function Login() {
   };
 
   return (
-    /* Full-screen absolute wrapper with the dark background */
     <div style={{
       position: 'absolute',
       top: 0,
       left: 0,
       width: '100vw',
       height: '100vh',
-      backgroundColor: '#16171d', // Maintains the dark global background as a base
+      backgroundColor: '#16171d',
       display: 'flex',
       boxSizing: 'border-box'
     }}>
-      
-      {/* Full-height two-panel layout. 
-        Instead of a fixed width (1126px), we now make the whole container 
-        stretch from edge to edge to fill those grey gaps.
-      */}
       <div style={{ 
         display: 'flex', 
-        width: '100%', // Stretch to full width
-        height: '100%', // Stretch to full height
+        width: '100%',
+        height: '100%',
         fontFamily: 'system-ui, sans-serif',
         boxSizing: 'border-box'
       }}>
-        {/* Left Panel: College Branding (Stretches to fill left half) */}
         <div style={{ 
-          flex: 1, // Stretches left half
+          flex: 1,
           backgroundColor: '#1a365d', 
           display: 'flex', 
           flexDirection: 'column', 
           justifyContent: 'center', 
-          alignItems: 'center', // Center content horizontally within panel
+          alignItems: 'center',
           padding: '48px', 
           color: 'white',
           boxSizing: 'border-box'
@@ -74,19 +67,18 @@ export default function Login() {
           </div>
         </div>
 
-        {/* Right Panel: Form (Stretches to fill right half) */}
         <div style={{ 
-          flex: 1, // Stretches right half
+          flex: 1,
           display: 'flex', 
           flexDirection: 'column', 
           justifyContent: 'center', 
-          alignItems: 'center', // Center content horizontally within panel
+          alignItems: 'center',
           padding: '48px', 
           backgroundColor: 'white',
           boxSizing: 'border-box'
         }}>
-          {/* Centered Form Wrapper to keep form inputs at original width */}
-          <div style={{ width: '100%', maxWidth: '350px' }}> {/* Keep form compact */}
+
+          <div style={{ width: '100%', maxWidth: '350px' }}>
             <div style={{ marginBottom: '32px', textAlign: 'left' }}>
               <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: '#2d3748', margin: '0 0 8px 0' }}>Iniciar Sesión</h2>
               <p style={{ fontSize: '14px', color: '#718096', margin: 0 }}>Introduce tus credenciales institucionales</p>

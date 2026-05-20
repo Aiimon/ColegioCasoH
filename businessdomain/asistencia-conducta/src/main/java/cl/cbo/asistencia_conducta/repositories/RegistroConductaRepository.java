@@ -7,5 +7,5 @@ import java.util.List;
 
 @Repository
 public interface RegistroConductaRepository extends JpaRepository<RegistroConducta, Long> {
-    List<RegistroConducta> findByAlumnoRut(String alumnoRut);; // Buscar la hoja de vida de un alumno específico
+    List<RegistroConducta> findByAlumnoRut(String alumnoRut);
 }

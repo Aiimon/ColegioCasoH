@@ -56,19 +56,6 @@
             <version>2.2.0</version>
         </dependency>
     </dependencies>
-<<<<<<< HEAD
-    
-        <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springdoc</groupId>
-                <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-                <version>2.5.0</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-=======
->>>>>>> feature/colegio-frontend
 
     <build>
         <plugins>
@@ -79,7 +66,7 @@
                 <configuration>
                     <source>17</source>
                     <target>17</target>
-                    </configuration>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
