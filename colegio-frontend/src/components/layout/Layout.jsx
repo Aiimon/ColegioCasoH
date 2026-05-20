@@ -1,31 +1,34 @@
-// src/components/Layout.jsx
 import { Outlet } from 'react-router-dom';
-import Sidebar from './Sidebar';
-import Navbar from './Navbar';
+import Sidebar from './Sidebar'; 
 
 export default function Layout() {
   return (
-    <div style={{ display: 'flex', width: '100vw', height: '100vh', overflow: 'hidden', fontFamily: 'system-ui, sans-serif' }}>
-      {/* Componente Fijo Lateral */}
-      <Sidebar />
-
-      {/* Contenedor del contenido derecho (Navbar + Pantalla Activa) */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-        {/* Componente Fijo Superior */}
-        <Navbar />
-
-        {/* Espacio de trabajo dinámico grisáceo con scroll independiente */}
-        <main style={{ 
-          flex: 1, 
-          backgroundColor: '#f7fafc', 
-          padding: '32px', 
-          overflowY: 'auto',
-          boxSizing: 'border-box'
-        }}>
-          {/* Aquí react-router-dom inyectará automáticamente el <Dashboard /> o cualquier otra vista */}
-          <Outlet />
-        </main>
+    <div style={{ 
+      display: 'flex', 
+      width: '100vw', 
+      minHeight: '100vh', 
+      backgroundColor: '#f7fafc', 
+      overflow: 'hidden',
+      fontFamily: 'system-ui, sans-serif'
+    }}>
+      
+      {/* 1. Sidebar Azul a la izquierda con ancho fijo */}
+      <div style={{ width: '260px', flexShrink: 0 }}>
+        <Sidebar />
       </div>
+
+      {/* 2. Contenedor Dinámico que toma todo el resto de la pantalla con scroll propio */}
+      <main style={{ 
+        flexGrow: 1, 
+        height: '100vh', 
+        overflowY: 'auto', 
+        backgroundColor: '#f7fafc',
+        boxSizing: 'border-box'
+      }}>
+        {/* Aquí react-router-dom inyectará el Dashboard, Gestión de Alumnos o Control Conductual */}
+        <Outlet />
+      </main>
+
     </div>
   );
 }

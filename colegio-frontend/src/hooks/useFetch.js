@@ -1,16 +1,22 @@
-// src/hooks/useFetch.js
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 export const useFetch = (url, options = null) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Guardamos las opciones en una referencia persistente en memoria
+  const optionsRef = useRef(options);
+
+  useEffect(() => {
+    optionsRef.current = options;
+  }, [options]);
+
   const fetchData = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(url, options);
+      const response = await fetch(url, optionsRef.current || undefined);
       
       if (!response.ok) {
         throw new Error(`Error: ${response.status} - ${response.statusText}`);
@@ -23,11 +29,17 @@ export const useFetch = (url, options = null) => {
     } finally {
       setLoading(false);
     }
-  }, [url, options]);
+  }, [url]);
 
-  // Se ejecuta automáticamente al montar el componente o cambiar la URL
+  // 🛠️ SOLUCIÓN MÁXIMA: Función autoejecutable con captura explícita de errores
   useEffect(() => {
-    fetchData();
+    const callFetch = async () => {
+      await fetchData();
+    };
+    
+    callFetch().catch((err) => {
+      console.error("Error en el ciclo del efecto:", err);
+    });
   }, [fetchData]);
 
   // Retornamos data, loading, error y una función refetch para cuando quieras recargar la tabla manualmente

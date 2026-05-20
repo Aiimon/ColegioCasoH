@@ -1,30 +1,34 @@
-// src/routes/AppRoutes.jsx
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from '../views/auth/Login';
 import Dashboard from '../views/dashboard/Dashboard';
 import PrivateRoute from '../components/PrivateRoute';
-import Layout from '../components/layout/Layout'; // Asegúrate de que la ruta apunte a tu Layout real
+import Layout from '../components/layout/Layout';
+import Home from './Home';
+import GestionAlumnos from '../views/alumnos/GestionAlumnos'; 
+import ControlConductual from '../views/alumnos/ControlConductual'; 
 
 export function AppRoutes() {
   return (
     <Routes>
-      {/* Ruta Pública: Login */}
+      {/* 🌐 EL PORTAL PÚBLICO: Apuntando al componente que ahora sí se importa bien */}
+      <Route path="/home" element={<Home />} />
+
+      {/* 🔐 LOGIN */}
       <Route path="/login" element={<Login />} />
 
-      {/* Rutas Privadas Protegidas bajo el Guardián */}
+      {/* 🛡️ RUTAS PRIVADAS (Con Sidebar inyectado por Layout) */}
       <Route element={<PrivateRoute />}>
-        {/* El Layout envuelve las pantallas para mantener fijo el Sidebar y Navbar */}
         <Route element={<Layout />}>
           <Route path="/dashboard" element={<Dashboard />} />
-          
-          {/* Aquí irás agregando tus próximas vistas, por ejemplo:
-          <Route path="/alumnos" element={<AlumnosLista />} />
-          <Route path="/conducta" element={<RegistroConducta />} />
-          */}
+          <Route path="/alumnos" element={<GestionAlumnos />} />
+          <Route path="/conducta" element={<ControlConductual />} />
         </Route>
       </Route>
 
-      {/* Redirección por defecto si escriben cualquier otra ruta en la URL */}
+      {/* 🔀 DIRECCIONAMIENTO RAÍZ */}
+      <Route path="/" element={<Navigate to="/home" replace />} />
+
+      {/* 🔄 COMODÍN */}
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>
   );
