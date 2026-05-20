@@ -1,0 +1,14 @@
+cl\cbo\gestion_academica\controller\AuthController.class
+cl\cbo\gestion_academica\services\AlumnoService.class
+cl\cbo\gestion_academica\dto\JwtResponseDTO.class
+cl\cbo\gestion_academica\repositories\AlumnoRepository.class
+cl\cbo\gestion_academica\dto\LoginRequestDTO.class
+cl\cbo\gestion_academica\entities\Usuario.class
+cl\cbo\gestion_academica\entities\Rol.class
+cl\cbo\gestion_academica\entities\Alumno.class
+cl\cbo\gestion_academica\dto\AlumnoDTO.class
+cl\cbo\gestion_academica\GestionAcademicaApplication.class
+cl\cbo\gestion_academica\repositories\UsuarioRepository.class
+cl\cbo\gestion_academica\services\UsuarioServiceImpl.class
+cl\cbo\gestion_academica\controller\AlumnoController.class
+cl\cbo\gestion_academica\services\UsuarioService.class

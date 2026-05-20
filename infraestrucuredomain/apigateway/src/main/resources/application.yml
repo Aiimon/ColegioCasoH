@@ -7,6 +7,7 @@ spring:
     web-application-type: reactive
   cloud:
     gateway:
+<<<<<<< Updated upstream
       routes:
         - id: gestion_academica_route
           uri: lb://businessdomain-gestion-academica
@@ -16,10 +17,31 @@ spring:
             - AuthenticationFilterinig
         - id: asistencia_conducta_route
           uri: lb://businessdomain-asistencia-conducta
+=======
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://localhost:5173"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+            allowCredentials: true
+      routes:
+        - id: gestion_academica_route
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/v1/academica/**
+            
+        - id: asistencia_conducta_route
+          uri: http://localhost:8082
+>>>>>>> Stashed changes
           predicates:
             - Path=/api/v1/conducta/**
-          filters:
-            - AuthenticationFilterinig
 
 eureka:
   client:

@@ -1,0 +1,15 @@
+C:\Users\aiimo\OneDrive\Escritorio\colegio-parent\businessdomain\gestion-academica\src\main\java\cl\cbo\gestion_academica\config\CorsConfig.java
+C:\Users\aiimo\OneDrive\Escritorio\colegio-parent\businessdomain\gestion-academica\src\main\java\cl\cbo\gestion_academica\controller\AlumnoController.java
+C:\Users\aiimo\OneDrive\Escritorio\colegio-parent\businessdomain\gestion-academica\src\main\java\cl\cbo\gestion_academica\controller\AuthController.java
+C:\Users\aiimo\OneDrive\Escritorio\colegio-parent\businessdomain\gestion-academica\src\main\java\cl\cbo\gestion_academica\dto\AlumnoDTO.java
+C:\Users\aiimo\OneDrive\Escritorio\colegio-parent\businessdomain\gestion-academica\src\main\java\cl\cbo\gestion_academica\dto\JwtResponseDTO.java
+C:\Users\aiimo\OneDrive\Escritorio\colegio-parent\businessdomain\gestion-academica\src\main\java\cl\cbo\gestion_academica\dto\LoginRequestDTO.java
+C:\Users\aiimo\OneDrive\Escritorio\colegio-parent\businessdomain\gestion-academica\src\main\java\cl\cbo\gestion_academica\entities\Alumno.java
+C:\Users\aiimo\OneDrive\Escritorio\colegio-parent\businessdomain\gestion-academica\src\main\java\cl\cbo\gestion_academica\entities\Rol.java
+C:\Users\aiimo\OneDrive\Escritorio\colegio-parent\businessdomain\gestion-academica\src\main\java\cl\cbo\gestion_academica\entities\Usuario.java
+C:\Users\aiimo\OneDrive\Escritorio\colegio-parent\businessdomain\gestion-academica\src\main\java\cl\cbo\gestion_academica\GestionAcademicaApplication.java
+C:\Users\aiimo\OneDrive\Escritorio\colegio-parent\businessdomain\gestion-academica\src\main\java\cl\cbo\gestion_academica\repositories\AlumnoRepository.java
+C:\Users\aiimo\OneDrive\Escritorio\colegio-parent\businessdomain\gestion-academica\src\main\java\cl\cbo\gestion_academica\repositories\UsuarioRepository.java
+C:\Users\aiimo\OneDrive\Escritorio\colegio-parent\businessdomain\gestion-academica\src\main\java\cl\cbo\gestion_academica\services\AlumnoService.java
+C:\Users\aiimo\OneDrive\Escritorio\colegio-parent\businessdomain\gestion-academica\src\main\java\cl\cbo\gestion_academica\services\UsuarioService.java
+C:\Users\aiimo\OneDrive\Escritorio\colegio-parent\businessdomain\gestion-academica\src\main\java\cl\cbo\gestion_academica\services\UsuarioServiceImpl.java
