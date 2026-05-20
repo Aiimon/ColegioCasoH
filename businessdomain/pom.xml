@@ -56,6 +56,7 @@
             <version>2.2.0</version>
         </dependency>
     </dependencies>
+<<<<<<< HEAD
     
         <dependencyManagement>
         <dependencies>
@@ -66,6 +67,8 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+=======
+>>>>>>> feature/colegio-frontend
 
     <build>
         <plugins>

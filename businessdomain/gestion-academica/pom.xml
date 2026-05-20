@@ -19,6 +19,7 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
+<<<<<<< HEAD
             <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
 
@@ -35,16 +36,21 @@
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
+=======
+>>>>>>> feature/colegio-frontend
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
 
+<<<<<<< HEAD
     <dependency>
         <groupId>org.springdoc</groupId>
         <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
     </dependency>
 
+=======
+>>>>>>> feature/colegio-frontend
     <build>
         <plugins>
             <plugin>

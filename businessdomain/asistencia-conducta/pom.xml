@@ -23,11 +23,14 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+<<<<<<< HEAD
         
     <dependency>
         <groupId>org.springdoc</groupId>
         <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
     </dependency>
+=======
+>>>>>>> feature/colegio-frontend
 
     <build>
         <plugins>
