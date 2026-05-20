@@ -6,37 +6,10 @@ spring:
     web-application-type: reactive
   cloud:
     gateway:
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
       globalcors:
         cors-configurations:
           '[/**]':
             allowedOrigins: "http://localhost:5173"
-            allowedMethods:
-              - GET
-              - POST
-              - PUT
-              - DELETE
-            allowedHeaders: "*"
->>>>>>> feature/colegio-frontend
-      routes:
-        - id: gestion_academica_route
-          uri: lb://BUSINESSDOMAIN-GESTION-ACADEMICA
-          predicates:
-            - Path=/api/v1/academica/**
-          filters:
-            - AuthenticationFilterinig
-            
-        - id: asistencia_conducta_route
-<<<<<<< HEAD
-          uri: lb://businessdomain-asistencia-conducta
-=======
-      globalcors:
-        cors-configurations:
-          '[/**]':
-            allowedOrigins:
-              - "http://localhost:5173"
             allowedMethods:
               - GET
               - POST
@@ -53,10 +26,6 @@ spring:
             
         - id: asistencia_conducta_route
           uri: http://localhost:8082
->>>>>>> Stashed changes
-=======
-          uri: lb://BUSINESSDOMAIN-ASISTENCIA-CONDUCTA 
->>>>>>> feature/colegio-frontend
           predicates:
             - Path=/api/v1/conducta/**
 
