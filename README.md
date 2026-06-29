@@ -1,6 +1,20 @@
-# 1. Componente Frontend - Portal Escolar Colegio B. O'Higgins
+# 🏛️ Plataforma Libro de Clases Digital - Colegio Bernardo O'Higgins de Coquimbo
 
-Este componente corresponde a la interfaz de usuario de la plataforma, desarrollada como una Single Page Application (SPA) utilizando React y empaquetada bajo el estándar de NPM.
+Este repositorio aloja la solución informática distribuida diseñada para modernizar los procesos administrativos y pedagógicos del Colegio Bernardo O'Higgins de Coquimbo, eliminando de forma definitiva la fragmentación de la información mediante una arquitectura resiliente, desacoplada y de alta disponibilidad.
+
+---
+
+## 🗺️ Arquitectura General del Sistema
+
+El ecosistema está estructurado bajo un patrón de **Microservicios** que garantiza el aislamiento de dominios, escalabilidad horizontal y total tolerancia a fallos.
+
+![Diagrama de Arquitectura](./Diagrama/Diagrama%20de%20arquitectura.png)
+
+<br>
+
+# 💻 1. Componente Frontend - Portal Escolar Colegio B. O'Higgins
+
+Este componente corresponde a la interfaz de usuario de la plataforma, desarrollada como una Single Page Application (SPA) utilizando **React junto con JavaScript** y empaquetada bajo el estándar de **NPM/Vite**. Implementa un renderizado eficiente vía Virtual DOM, inmutabilidad de estados para cálculos analíticos en tiempo real y hooks personalizados para el desacoplamiento lógico.
 
 ## Requisitos Previos
 * Node.js (Versión 18 o superior recomendada)
@@ -9,109 +23,77 @@ Este componente corresponde a la interfaz de usuario de la plataforma, desarroll
 ## Instalación y Configuración
 
 1. Entrar al directorio del frontend:
-   cd colegio-frontend
-
+```bash
+cd colegio-frontend
+```
 2. Instalar todas las dependencias declaradas en el package.json:
-   npm install
 
-## Ejecución en Entorno de Desarrollo
+```bash
+npm install
+```
 
-Para levantar el servidor de desarrollo local (Vite/NPM):
+3. Ejecución en Entorno de Desarrollo
+Para levantar el servidor de desarrollo local con Vite/NPM:
+
+```bash
 npm run dev
+```
 
-Una vez ejecutado, abrir en el navegador la ruta informada en la terminal: http://localhost:5173/home
+Una vez ejecutado, abrir en el navegador la ruta informada en la terminal: http://localhost:5173/
 
-## Scripts Disponibles
+Scripts Disponibles
 * npm run dev: Levanta la aplicación local con Hot-Reload.
+
 * npm run build: Empaqueta y optimiza la aplicación en la carpeta dist para producción.
+
 * npm run lint: Ejecuta el validador ESLint para asegurar la calidad del código limpio.
 
-<br>
+## 🛡️ Resiliencia y Continuidad Operacional (Alta Disponibilidad)
+El cliente cuenta con un diseño defensivo envuelto en bloques try-catch. Si el backend o la base de datos relacional en MySQL pierden conectividad, el frontend captura la excepción de inmediato y respalda de manera automática la estructura de datos JSON en el Local Storage indexado por curso, notificando al usuario mediante componentes Toast flotantes para evitar cualquier pérdida de datos en el aula.
 
-# 2. Backend For Frontend (BFF) - API Gateway Service
 
-Componente centralizador que actúa como la puerta de entrada única del ecosistema. Implementa Spring Cloud Gateway para gestionar el enrutamiento dinámico hacia los microservicios, resolver problemas de CORS y centralizar la seguridad.
+# 🛡️ 2. Backend For Frontend (BFF) - API Gateway Service
+
+Componente centralizador que actúa como la puerta de entrada única del ecosistema. Implementa Spring Cloud Gateway para gestionar el enrutamiento dinámico hacia los microservicios, resolver problemas de CORS y centralizar la seguridad perimetral.
 
 ## Requisitos Previos
 * Java Development Kit (JDK) 17 o superior
 * Apache Maven 3.8+
 * Servidor Eureka en ejecución (puerto 8761)
 
-##  Configuración del Puerto
+## Configuración del Puerto
 El servicio se levanta por defecto en el puerto:
-* Puerto: 8080 (Expuesto de forma directa hacia el cliente React)
+* **Puerto:** 8080 (Expuesto de forma directa hacia el cliente React)
+* **Seguridad Stateless:** Valida la firma de los tokens **JWT** que viajan en las cabeceras de las peticiones HTTP antes de rutar a los servicios internos de negocio.
 
-##  Instalación y Ejecución
+## Instalación y Ejecución
 
 1. Compilar el proyecto con Maven:
-   mvn clean install
+```bash
+mvn clean install
+```
 
 2. Ejecutar la aplicación Spring Boot:
-   mvn spring-boot:run
-
-<br>
-
-# 3. Microservicio Transaccional - Gestión Escolar
-
-Este componente aloja la lógica de negocio modular e independiente del establecimiento, estructurado mediante un arquetipo ágil de Spring Boot.
-
-## Requisitos Previos
-* Java Development Kit (JDK) 17 o superior
-* Servidor de Descubrimiento Eureka activo
-
-## Identificación de Módulos y Puertos
-* Microservicio Académico: Puerto 8081 (Gestión de matrículas y alumnos)
-* Microservicio de Conducta: Puerto 8082 (Bitácora escolar con Patrón Factory Method)
-
-##  Instalación y Ejecución
-
-1. Compilar el submódulo de forma limpia:
-   mvn clean install
-
-2. Levantar el servicio en su respectivo entorno local:
-   mvn spring-boot:run
-
-##  Pruebas Unitarias y Cobertura
-Para ejecutar las pruebas unitarias (JUnit 5 / Mockito) y validar el porcentaje de cobertura exigido por la pauta:
-mvn test
-
-Los resultados y reportes de cobertura se guardarán automáticamente en la ruta estandarizada target/site/jacoco/index.html.
-
-<br>
-
-# 4. Guía de Uso: Arquetipos Estructurados de Maven
-
-Este repositorio contiene el proyecto base estructurado (Proyecto Padre Multi-Módulo) que sirve como arquetipo institucional para el desarrollo uniforme de microservicios en el establecimiento.
-
-## Cómo generar un nuevo Microservicio basado en nuestro Arquetipo
-
-Si el colegio requiere expandir la plataforma (por ejemplo, añadir un módulo de Finanzas o Asistencia), se debe registrar el nuevo módulo hijo bajo la herencia del POM padre siguiendo estos pasos:
-
-1. Declarar el nuevo módulo en el archivo pom.xml raíz (Padre):
-
-```xml
-<modules>
-    <module>api-gateway</module>
-    <module>eureka-server</module>
-    <module>gestion-academica</module>
-    <module>asistencia-conducta</module>
-    <module>nuevo-microservicio</module>
-</modules>
+```bash
+mvn spring-boot:run
 ```
-Crear la estructura de carpetas base usando la convención estándar:
 
-src/main/java/com/colegio/tu_modulo
+# 🔍 3. Capa de Descubrimiento de Servicios - Eureka Server
+Orquestador de infraestructura basado en Netflix Eureka Server que proporciona el mapeo y registro dinámico de red para todos los componentes del ecosistema distribuido.
 
-src/main/resources/application.yml
+* Características Clave
+* Puerto de Escucha: 8761
 
-Heredar las dependencias globales en el nuevo pom.xml hijo sin repetir versiones:
+Alta Disponibilidad: Permite el balanceo de carga elástico y el autoregistro automático de las instancias de microservicios en caliente.
 
-```xml
-<parent>
-    <groupId>com.colegio</groupId>
-    <artifactId>colegio-parent</artifactId>
-    <version>1.0.0</version>
-</parent>
+Instalación y Ejecución
+Compilar el proyecto con Maven:
+
+```bash
+mvn clean install
 ```
-Al compilar desde la raíz con el comando mvn clean install, Maven empaquetará el nuevo módulo automáticamente garantizando que utilice las mismas versiones estables de Spring Boot, herramientas de pruebas y seguridad de todo el ecosistema.
-<br>
+Levantar el servidor de descubrimiento:
+
+```bash
+mvn spring-boot:run
+```
