@@ -1,118 +1,377 @@
-import { useState } from 'react';
-import { ClipboardCheck, FileText, AlertTriangle, ShieldCheck } from 'lucide-react';
+import { useState, useEffect } from 'react';
+// 🚀 Centralizado a través de tu API Gateway
+import api from '../../services/api'; 
+import { 
+  ClipboardCheck, 
+  FileText, 
+  AlertTriangle, 
+  ShieldCheck, 
+  RefreshCw, 
+  BookOpen, 
+  Calendar,
+  Send
+} from 'lucide-react';
 
 export default function ControlConductual() {
-  const [incidencias, setIncidencias] = useState([
-    { id: 101, alumno: "Esteban Quito", rut: "12345678-9", tipo: "NEGATIVA", detalle: "[GRAVEDAD/ADVERTENCIA]: El alumno interrumpe de forma reiterada la clase de programación distribuida." },
-    { id: 102, alumno: "Rosa Melano", rut: "98765432-1", tipo: "POSITIVA", detalle: "[FELICITACIÓN]: Destacada participación en la resolución de desafíos del algoritmo de ordenamiento." }
-  ]);
+  // 📊 Estados para el Filtro de Cursos
+  const [cursos, setCursos] = useState([]);
+  const [cursoSeleccionadoId, setCursoSeleccionadoId] = useState("");
+  const [loadingCursos, setLoadingCursos] = useState(true);
 
-  const [alumno, setAlumno] = useState("12345678-9");
-  const [tipo, setTipo] = useState("NEGATIVA");
+  // 👥 Estados para los Alumnos
+  const [alumnosAcademicos, setAlumnosAcademicos] = useState([]);
+  const [alumnoIdSeleccionado, setAlumnoIdSeleccionado] = useState("");
+  const [loadingAlumnos, setLoadingAlumnos] = useState(false);
+
+  // 📑 Estados para el Historial de Conducta
+  const [incidencias, setIncidencias] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  // ✍️ Estados para el Formulario de Nueva Anotación
+  const [tipoAnotacion, setTipoAnotacion] = useState("NEGATIVA");
   const [detalle, setDetalle] = useState("");
+  const [subiendo, setSubiendo] = useState(false);
 
-  const handleSimularFactory = (e) => {
-    e.preventDefault();
-    if (!detalle.trim()) return alert("Por favor, escribe el detalle de la incidencia.");
-
-    // Mapeo manual del nombre según el RUT para la simulación en pantalla
-    const nombreAlumno = alumno === "12345678-9" ? "Esteban Quito" : alumno === "98765432-1" ? "Rosa Melano" : "Alan Brito";
-    
-    // Simulamos el formateo que haría la Fábrica en Java
-    const prefijo = tipo === "NEGATIVA" ? "[GRAVEDAD/ADVERTENCIA]: " : "[FELICITACIÓN]: ";
-
-    const nuevaIncidencia = {
-      id: Date.now(),
-      alumno: nombreAlumno,
-      rut: alumno,
-      tipo: tipo,
-      detalle: `${prefijo}${detalle}`
+  // 📥 A. CARGA INICIAL DE CURSOS (Puerto 8080 -> Microservicio 8081)
+  useEffect(() => {
+    let activo = true;
+    const cargarCursosFiltro = async () => {
+      try {
+        setLoadingCursos(true);
+        const response = await api.get('/academica/cursos/anio/2026');
+        const listaCursos = Array.isArray(response.data) ? response.data : [];
+        
+        if (activo) {
+          setCursos(listaCursos);
+          if (listaCursos.length > 0) {
+            setCursoSeleccionadoId(listaCursos[0].id.toString());
+          }
+        }
+      } catch (err) {
+        console.warn("Error al cargar cursos, activando respaldo local:", err);
+        const cursosRespaldo = [
+          { id: 1, nombre: "1° Medio A" },
+          { id: 2, nombre: "2° Medio B" }
+        ];
+        if (activo) {
+          setCursos(cursosRespaldo);
+          setCursoSeleccionadoId(cursosRespaldo[0].id.toString());
+        }
+      } finally {
+        if (activo) setLoadingCursos(false);
+      }
     };
 
-    setIncidencias([nuevaIncidencia, ...incidencias]);
-    setDetalle("");
-    alert(`⚡ Éxito: Instanciado dinámicamente tipo [${tipo}] mediante Patrón Factory.`);
+    cargarCursosFiltro();
+    return () => { activo = false; };
+  }, []);
+
+  // 📥 B. CARGA DE ALUMNOS FILTRADOS POR CURSO (Reactiva al cambiar el curso)
+  useEffect(() => {
+    let activo = true;
+    const cargarAlumnosPorCursoDinamico = async () => {
+      if (!cursoSeleccionadoId) return;
+      try {
+        setLoadingAlumnos(true);
+        const response = await api.get(`/academica/alumnos/curso/${cursoSeleccionadoId}`);
+        const listaAlumnos = Array.isArray(response.data) ? response.data : [];
+
+        if (activo) {
+          setAlumnosAcademicos(listaAlumnos);
+          if (listaAlumnos.length > 0) {
+            const primerAlumno = listaAlumnos[0];
+            const idInicial = primerAlumno.id || primerAlumno.alumnoId || primerAlumno.idAlumno;
+            if (idInicial) setAlumnoIdSeleccionado(idInicial.toString());
+          } else {
+            setAlumnoIdSeleccionado("");
+            setIncidencias([]);
+          }
+        }
+      } catch (err) {
+        console.warn("Error al traer alumnos, activando nómina de respaldo:", err);
+        const respaldo = [
+          { id: 1, nombreCompleto: "Juan Ignacio Pérez Araneda", rut: "12.345.678-9" },
+          { id: 2, rut: "9.876.543-2", nombreCompleto: "Esteban Quito" },
+          { id: 3, rut: "11.111.111-1", nombreCompleto: "Rosa Melano" }
+        ];
+        if (activo && cursoSeleccionadoId === "1") {
+          setAlumnosAcademicos(respaldo);
+          setAlumnoIdSeleccionado(respaldo[0].id.toString());
+        } else if (activo) {
+          setAlumnosAcademicos([]);
+          setAlumnoIdSeleccionado("");
+        }
+      } finally {
+        if (activo) setLoadingAlumnos(false);
+      }
+    };
+
+    cargarAlumnosPorCursoDinamico();
+    return () => { activo = false; };
+  }, [cursoSeleccionadoId]);
+
+  // 📥 C. CARGA DE BITÁCORA CONDUCTAL (Reactiva al cambiar el alumno)
+  useEffect(() => {
+    let activo = true;
+    const cargarHistorialBD = async () => {
+      if (!alumnoIdSeleccionado) {
+        if (activo) setIncidencias([]);
+        return;
+      }
+      try {
+        setLoading(true);
+        const response = await api.get(`/conducta/conducta/alumno/${alumnoIdSeleccionado}`);
+        if (activo) {
+          setIncidencias(Array.isArray(response.data) ? response.data : []);
+        }
+      } catch (err) {
+        console.error("Error al traer anotaciones de conducta:", err);
+        if (activo) setIncidencias([]);
+      } finally {
+        if (activo) setLoading(false);
+      }
+    };
+
+    cargarHistorialBD();
+    return () => { activo = false; };
+  }, [alumnoIdSeleccionado]);
+
+  // 🚀 ENVÍO DE ANOTACIÓN POST (Corregido para hacer match con AnotacionDTO y ruteo del Gateway)
+const handleIngresarAnotacion = async (e) => {
+    e.preventDefault();
+    if (!alumnoIdSeleccionado || !detalle.trim()) {
+      alert("Por favor, seleccione un alumno y describa los hechos.");
+      return;
+    }
+
+    try {
+      setSubiendo(true);
+
+      const payload = {
+        tipo: tipoAnotacion, 
+        detalle: detalle.trim(),
+        alumnoId: parseInt(alumnoIdSeleccionado, 10),
+        profesorId: 1, 
+        cursoId: parseInt(cursoSeleccionadoId, 10) || 1
+      };
+
+      // ⚡ Envío unificado usando la ruta espejo del Gateway
+      const response = await api.post('/conducta/conducta/anotacion', payload);
+      
+      if (response.status === 200 || response.status === 201) {
+        alert("⚡ Éxito: Objeto instanciado por la fábrica y persistido en la Base de Datos.");
+        setDetalle("");
+        
+        // Refresco inmediato
+        const refetch = await api.get(`/conducta/conducta/alumno/${alumnoIdSeleccionado}`);
+        setIncidencias(Array.isArray(refetch.data) ? refetch.data : []);
+      }
+    } catch (err) {
+      console.error("Error al registrar anotación con patrón Factory:", err);
+      alert("Error de coincidencia de rutas en el Gateway.");
+    } finally {
+      setSubiendo(false);
+    }
   };
 
   return (
-    <div style={{ padding: '30px', width: '100%', boxSizing: 'border-box', fontFamily: 'system-ui, sans-serif', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+    <div style={{ 
+      padding: '40px', 
+      width: '100%', 
+      boxSizing: 'border-box', 
+      fontFamily: "'Segoe UI', Roboto, sans-serif",
+      backgroundColor: '#f8fafc',
+      minHeight: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '30px'
+    }}>
       
-      <header style={{ paddingBottom: '16px', borderBottom: '1px solid #e2e8f0' }}>
-        <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#1a365d', margin: 0 }}>
-          Control Conductual y Registro de Bitácoras
+      {/* Encabezado */}
+      <header style={{ borderBottom: '2px solid #e2e8f0', paddingBottom: '16px' }}>
+        <h1 style={{ fontSize: '26px', fontWeight: '800', color: '#1e3a8a', margin: 0 }}>
+          Control y Bitácora Conductual
         </h1>
-        <p style={{ color: '#718096', margin: '4px 0 0 0', fontSize: '13px' }}>
-          Gestión Extensible de Expedientes • Microservicio Asistencia y Conducta (Puerto 8082)
+        <p style={{ color: '#64748b', margin: '4px 0 0 0', fontSize: '14px' }}>
+          Módulo de Inspección General • Gestión Integrada de Observaciones Escolares
         </p>
       </header>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: '24px', alignItems: 'start' }}>
+      {/* Grid de Paneles */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px', alignItems: 'start' }}>
         
-        {/* PANEL IZQUIERDO: FORMULARIO GENERADOR */}
-        <div style={{ backgroundColor: 'white', padding: '24px', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0,0,0,0.02)', border: '1px solid #edf2f7' }}>
-          <h2 style={{ fontSize: '16px', fontWeight: 'bold', color: '#2d3748', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <ClipboardCheck size={18} style={{ color: '#3182ce' }} /> Nueva Entrada Institucional
+        {/* PANEL IZQUIERDO: FILTROS Y FORMULARIO */}
+        <section style={{ backgroundColor: '#ffffff', padding: '28px', borderRadius: '12px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)', border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <h2 style={{ fontSize: '18px', fontWeight: '700', color: '#1e293b', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <BookOpen size={20} style={{ color: '#2563eb' }} /> Selección de Alumno y Filtros
           </h2>
 
-          <form onSubmit={handleSimularFactory} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <div>
-              <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', color: '#4a5568', marginBottom: '6px' }}>Estudiante</label>
-              <select value={alumno} onChange={e => setAlumno(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #cbd5e0', fontSize: '13px', backgroundColor: 'white' }}>
-                <option value="12345678-9">Esteban Quito (12345678-9)</option>
-                <option value="98765432-1">Rosa Melano (98765432-1)</option>
-                <option value="11111111-1">Alan Brito (11111111-1)</option>
+          {/* SELECTORES EN PARALELO CON COLORES ESTANDARIZADOS */}
+          <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+            {/* Selector de Cursos */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', flex: '1', minWidth: '150px' }}>
+              <label style={{ fontSize: '13px', fontWeight: '600', color: '#475569' }}>1. Filtrar por Curso:</label>
+              <select
+                value={cursoSeleccionadoId}
+                onChange={(e) => setCursoSeleccionadoId(e.target.value)}
+                disabled={loadingCursos}
+                style={{ padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '14px', backgroundColor: 'white', color: '#1e3a8a', fontWeight: '700', outline: 'none' }}
+              >
+                {loadingCursos && <option style={{ color: '#0f172a' }}>Cargando cursos...</option>}
+                {cursos.map((c) => (
+                  <option key={c.id} value={c.id} style={{ color: '#0f172a' }}>{c.nombre || `Curso ${c.id}`}</option>
+                ))}
               </select>
             </div>
 
-            <div>
-              <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', color: '#4a5568', marginBottom: '6px' }}>Evaluación del Comportamiento</label>
-              <select value={tipo} onChange={e => setTipo(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #cbd5e0', fontSize: '13px', fontWeight: '600', backgroundColor: 'white' }}>
-                <option value="NEGATIVA" style={{ color: '#dc3545' }}>🔴 Registro de Observación Negativa</option>
-                <option value="POSITIVA" style={{ color: '#28a745' }}>🟢 Registro de Felicitación Destacada</option>
+            {/* Selector de Alumnos */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', flex: '2', minWidth: '220px' }}>
+              <label style={{ fontSize: '13px', fontWeight: '600', color: '#475569' }}>2. Seleccionar Estudiante:</label>
+              <select
+                value={alumnoIdSeleccionado}
+                onChange={(e) => setAlumnoIdSeleccionado(e.target.value)}
+                disabled={loadingAlumnos}
+                style={{ padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '14px', backgroundColor: 'white', color: '#1e3a8a', fontWeight: '700', outline: 'none' }}
+              >
+                {loadingAlumnos && <option style={{ color: '#0f172a' }}>Sincronizando alumnos...</option>}
+                {!loadingAlumnos && alumnosAcademicos.length === 0 && <option value="" style={{ color: '#0f172a' }}>No hay alumnos en este curso</option>}
+                {alumnosAcademicos.map((al) => (
+                  <option key={al.id} value={al.id} style={{ color: '#0f172a' }}>
+                    {al.nombreCompleto || `${al.nombres} ${al.apellidos || ''}`}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <hr style={{ border: 'none', borderTop: '1px solid #e2e8f0', margin: '10px 0' }} />
+
+          {/* Formulario de Registro */}
+          <form onSubmit={handleIngresarAnotacion} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <h3 style={{ fontSize: '15px', fontWeight: '700', color: '#1e3a8a', margin: 0 }}>
+              Registrar Nueva Observación
+            </h3>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <label style={{ fontSize: '13px', fontWeight: '600', color: '#475569' }}>Tipo de Hoja:</label>
+              <select
+                value={tipoAnotacion}
+                onChange={(e) => setTipoAnotacion(e.target.value)}
+                style={{ padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '14px', backgroundColor: 'white', color: '#1e3a8a', fontWeight: '700', outline: 'none' }}
+              >
+                <option value="NEGATIVA" style={{ color: '#dc2626', fontWeight: '600' }}>🔴 Observación Negativa</option>
+                <option value="POSITIVA" style={{ color: '#16a34a', fontWeight: '600' }}>🟢 Observación Positiva</option>
               </select>
             </div>
 
-            <div>
-              <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', color: '#4a5568', marginBottom: '6px' }}>Desglose de Hechos</label>
-              <textarea value={detalle} onChange={e => setDetalle(e.target.value)} placeholder="Escriba los pormenores detectados en el aula académica..." rows="4" style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #cbd5e0', fontSize: '13px', boxSizing: 'border-box', fontFamily: 'inherit' }}></textarea>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <label style={{ fontSize: '13px', fontWeight: '600', color: '#475569' }}>Descripción de los Hechos:</label>
+              <textarea
+                value={detalle}
+                onChange={(e) => setDetalle(e.target.value)}
+                placeholder="Escriba los pormenores observados en el aula o patio de la institución..."
+                rows={4}
+                style={{ padding: '12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '14px', resize: 'vertical', fontFamily: 'inherit', outline: 'none' }}
+              />
             </div>
 
-            <button type="submit" style={{ width: '100%', padding: '12px', backgroundColor: '#38a169', color: 'white', border: 'none', borderRadius: '6px', fontSize: '13px', fontWeight: 'bold', cursor: 'pointer', boxShadow: '0 2px 4px rgba(56, 161, 105, 0.2)' }}>
-              Procesar con Patrón Factory
+            <button
+              type="submit"
+              disabled={subiendo || !alumnoIdSeleccionado}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                padding: '12px',
+                backgroundColor: alumnoIdSeleccionado ? '#2563eb' : '#94a3b8',
+                color: '#ffffff',
+                border: 'none',
+                borderRadius: '8px',
+                fontSize: '14px',
+                fontWeight: '700',
+                cursor: alumnoIdSeleccionado ? 'pointer' : 'not-allowed',
+                boxShadow: '0 2px 4px rgba(37,99,235,0.2)',
+                transition: 'background-color 0.2s'
+              }}
+              onMouseEnter={e => { if(alumnoIdSeleccionado) e.currentTarget.style.backgroundColor = '#1d4ed8'; }}
+              onMouseLeave={e => { if(alumnoIdSeleccionado) e.currentTarget.style.backgroundColor = '#2563eb'; }}
+            >
+              {subiendo ? (
+                <>
+                  <RefreshCw size={16} style={{ animation: 'spin 1s linear infinite' }} /> Guardando en MySQL...
+                </>
+              ) : (
+                <>
+                  <Send size={16} /> Subir Registro de Incidencia
+                </>
+              )}
             </button>
           </form>
-        </div>
+        </section>
 
-        {/* PANEL DERECHO: AUDITORÍA RECIENTE */}
-        <div style={{ backgroundColor: 'white', padding: '24px', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0,0,0,0.02)', border: '1px solid #edf2f7' }}>
-          <h2 style={{ fontSize: '16px', fontWeight: 'bold', color: '#2d3748', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <FileText size={18} style={{ color: '#e53e3e' }} /> Registro Temporal de Auditoría (Demo)
+        {/* PANEL DERECHO: HISTORIAL DE OBSERVACIONES */}
+        <section style={{ backgroundColor: '#ffffff', padding: '28px', borderRadius: '12px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)', border: '1px solid #e2e8f0', minHeight: '400px' }}>
+          <h2 style={{ fontSize: '18px', fontWeight: '700', color: '#1e293b', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <FileText size={20} style={{ color: '#1e3a8a' }} /> Historial y Hoja de Vida Cronológica
           </h2>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {incidencias.map((inc) => (
-              <div key={inc.id} style={{
-                padding: '14px',
-                borderRadius: '6px',
-                borderLeft: `5px solid ${inc.tipo === 'NEGATIVA' ? '#dc3545' : '#28a745'}`,
-                backgroundColor: inc.tipo === 'NEGATIVA' ? '#fff5f5' : '#f4fbf7'
-              }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', fontWeight: 'bold', marginBottom: '6px' }}>
-                  <span style={{ color: inc.tipo === 'NEGATIVA' ? '#c53030' : '#22543d', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    {inc.tipo === 'NEGATIVA' ? <AlertTriangle size={12} /> : <ShieldCheck size={12} />} TIPO: {inc.tipo}
-                  </span>
-                  <span style={{ color: '#a0aec0' }}>ID: #{inc.id}</span>
-                </div>
-                <div style={{ fontSize: '12px', fontWeight: '700', color: '#4a5568', marginBottom: '4px' }}>
-                  {inc.alumno} <span style={{ fontWeight: '400', color: '#718096', fontSize: '11px' }}>({inc.rut})</span>
-                </div>
-                <p style={{ margin: 0, fontSize: '12px', color: '#2d3748', lineHeight: '1.4' }}>
-                  {inc.detalle}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
+          {loading ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#64748b', fontSize: '14px', padding: '40px 0', justifyContent: 'center' }}>
+              <RefreshCw size={18} style={{ animation: 'spin 1s linear infinite' }} /> Conectando al Microservicio de Conducta...
+            </div>
+          ) : incidencias.length === 0 ? (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '260px', color: '#94a3b8', border: '2px dashed #e2e8f0', borderRadius: '8px', padding: '20px', textAlign: 'center' }}>
+              <ClipboardCheck size={44} style={{ marginBottom: '10px', color: '#cbd5e1' }} />
+              <p style={{ margin: 0, fontWeight: '600', fontSize: '15px' }}>Hoja de vida limpia</p>
+              <p style={{ margin: '4px 0 0 0', fontSize: '13px' }}>El alumno seleccionado no registra anotaciones vigentes en el sistema.</p>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', maxHeight: '480px', overflowY: 'auto', paddingRight: '4px' }}>
+              {incidencias.map((item, index) => {
+                // ⚡ Ajustado para leer 'item.tipo' devuelto por tu entidad Anotacion de Java
+                const esNegativa = item.tipo === "NEGATIVA";
+                return (
+                  <div 
+                    key={item.id || index} 
+                    style={{ 
+                      padding: '16px', 
+                      borderRadius: '8px', 
+                      backgroundColor: esNegativa ? '#fef2f2' : '#f0fdf4',
+                      borderLeft: `5px solid ${esNegativa ? '#dc2626' : '#16a34a'}`,
+                      borderTop: '1px solid #f1f5f9',
+                      borderRight: '1px solid #f1f5f9',
+                      borderBottom: '1px solid #f1f5f9'
+                    }}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                      <span style={{ 
+                        fontSize: '11px', 
+                        fontWeight: '800', 
+                        padding: '2px 8px', 
+                        borderRadius: '12px',
+                        backgroundColor: esNegativa ? '#ffeeee' : '#e6fded',
+                        color: esNegativa ? '#b91c1c' : '#15803d',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px'
+                      }}>
+                        {esNegativa ? <AlertTriangle size={12} /> : <ShieldCheck size={12} />}
+                        ANOTACIÓN {item.tipo}
+                      </span>
+                      <span style={{ fontSize: '12px', color: '#64748b', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <Calendar size={13} /> {item.fecha || "Vigente"}
+                      </span>
+                    </div>
+                    <p style={{ margin: 0, fontSize: '13.5px', color: '#334155', lineHeight: '1.5', fontWeight: '500' }}>
+                      {item.detalle}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </section>
 
       </div>
     </div>

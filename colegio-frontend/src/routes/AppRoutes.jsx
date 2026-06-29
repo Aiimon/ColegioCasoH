@@ -6,6 +6,7 @@ import Layout from '../components/layout/Layout';
 import Home from './Home';
 import GestionAlumnos from '../views/alumnos/GestionAlumnos'; 
 import ControlConductual from '../views/alumnos/ControlConductual'; 
+import LibroClasesAcademico from '../views/alumnos/LibroClasesAcademico';
 
 export function AppRoutes() {
   return (
@@ -22,6 +23,7 @@ export function AppRoutes() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/alumnos" element={<GestionAlumnos />} />
           <Route path="/conducta" element={<ControlConductual />} />
+          <Route path="/libro" element={<LibroClasesAcademico />} />
         </Route>
       </Route>
 

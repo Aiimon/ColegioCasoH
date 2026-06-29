@@ -1,61 +1,40 @@
 package cl.cbo.gestion_academica.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import java.time.LocalDate;
 
 @Entity
-@Table(name = "alumno")
+@Table(name = "alumnos")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Alumno {
-    
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // AUTO_INCREMENT en MySQL
+    private Long id;
+
+    @Column(nullable = false, unique = true, length = 12) // VARCHAR(12) para RUT Chileno
     private String rut;
-    private String nombre;
-    private String apellido;
-    private String curso;
 
-    // Constructor Vacío Obligatorio para JPA
-    public Alumno() {
-    }
+    @Column(nullable = false, length = 100) // VARCHAR(100)
+    private String nombres;
 
-    // Constructor Completo
-    public Alumno(String rut, String nombre, String apellido, String curso) {
-        this.rut = rut;
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.curso = curso;
-    }
+    @Column(nullable = false, length = 100)
+    private String apellidos;
 
-    // --- GETTERS Y SETTERS MANUALES (Encapsulamiento puro) ---
-    public String getRut() {
-        return rut;
-    }
+    @Column(nullable = false, unique = true, length = 150)
+    private String email;
 
-    public void setRut(String rut) {
-        this.rut = rut;
-    }
+    @Column(name = "fecha_nacimiento", nullable = false) // Mapea a DATE en MySQL
+    private LocalDate fechaNacimiento;
 
-    public String getNombre() {
-        return nombre;
-    }
+    @Column(nullable = false)
+    private boolean activo = true;
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getApellido() {
-        return apellido;
-    }
-
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
-    }
-
-    public String getCurso() {
-        return curso;
-    }
-
-    public void setCurso(String curso) {
-        this.curso = curso;
-    }
+    @Column(name = "curso_id", nullable = false)
+    private Long cursoId;
 }

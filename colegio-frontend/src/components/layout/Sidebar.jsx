@@ -1,6 +1,6 @@
 import { NavLink, Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
-import { LayoutDashboard, Users, ClipboardCheck, LogOut } from 'lucide-react';
+import { LayoutDashboard, Users, ClipboardCheck, LogOut, CheckSquare } from 'lucide-react';
 
 export default function Sidebar() {
   const { logout } = useAuth();
@@ -10,6 +10,7 @@ export default function Sidebar() {
     { icon: <LayoutDashboard size={20} />, label: 'Inicio / Resumen', path: '/dashboard' },
     { icon: <Users size={20} />, label: 'Gestión de Alumnos', path: '/alumnos' },
     { icon: <ClipboardCheck size={20} />, label: 'Control Conductual', path: '/conducta' },
+    { icon: <CheckSquare size={20} />, label: 'Asistencia y notas', path: '/libro' }
   ];
 
   // Estilo base idéntico a tus botones originales
@@ -25,7 +26,7 @@ export default function Sidebar() {
     cursor: 'pointer',
     transition: 'all 0.2s ease',
     textAlign: 'left',
-    textDecoration: 'none', // Evita que se subraye el texto por ser un enlace
+    textDecoration: 'none',
     boxSizing: 'border-box'
   };
 

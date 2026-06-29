@@ -1,31 +1,32 @@
 package cl.cbo.gestion_academica.controller;
 
-import cl.cbo.gestion_academica.dto.LoginRequestDTO;
-import cl.cbo.gestion_academica.dto.JwtResponseDTO;
-import org.springframework.http.HttpStatus;
+import cl.cbo.gestion_academica.services.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "*") // Permite que React se conecte sin problemas de CORS
 public class AuthController {
 
+    private final AuthService authService;
+
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
+
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginRequest) {
-        // Simulación temporal idéntica a tus datos de prueba en React
-        if ("profesor@colegio.cl".equals(loginRequest.getEmail()) && "123456".equals(loginRequest.getPassword())) {
-            
-            JwtResponseDTO response = new JwtResponseDTO(
-                "token-ficticio-jwt-123456",
-                loginRequest.getEmail(),
-                "Profesor O'Higgins",
-                "ROLE_PROFESOR"
-            );
-            
-            return ResponseEntity.ok(response);
-        }
+    public ResponseEntity<Map<String, String>> login(@RequestBody Map<String, String> credentials) {
+        String email = credentials.get("email");
+        String password = credentials.get("password");
+
+        String token = authService.login(email, password);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("token", token);
         
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales inválidas");
+        return ResponseEntity.ok(response);
     }
 }
