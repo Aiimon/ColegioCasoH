@@ -1,28 +1,17 @@
 package cl.cbo.gestion_academica.dto;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class JwtResponseDTO {
     private String token;
+    private String type = "Bearer"; // Estándar de tokens de autorización
+    private Long usuarioId;
     private String email;
-    private String name;
-    private String role;
-
-    public JwtResponseDTO(String token, String email, String name, String role) {
-        this.token = token;
-        this.email = email;
-        this.name = name;
-        this.role = role;
-    }
-
-    // Getters y Setters
-    public String getToken() { return token; }
-    public void setToken(String token) { this.token = token; }
-
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-
-    public String getRole() { return role; }
-    public void setRole(String role) { this.role = role; }
+    private String rol; // Ej: ROLE_PROFESOR, ROLE_ALUMNO
+    private Long personaReferenciaId; // El ID del alumno o profesor dueño de la cuenta
 }

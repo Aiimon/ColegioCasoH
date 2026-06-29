@@ -2,9 +2,11 @@ package cl.cbo.gestion_academica.repositories;
 
 import cl.cbo.gestion_academica.entities.Alumno;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import java.util.Optional;
+import java.util.List;
 
-@Repository
-public interface AlumnoRepository extends JpaRepository<Alumno, String> {
-    // Implementa el Repository Pattern heredando los métodos CRUD automáticamente
+public interface AlumnoRepository extends JpaRepository<Alumno, Long> {
+    
+    Optional<Alumno> findByRut(String rut);
+    List<Alumno> findByCursoIdAndActivoTrue(Long cursoId); 
 }

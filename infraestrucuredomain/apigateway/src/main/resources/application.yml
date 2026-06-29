@@ -20,15 +20,18 @@ spring:
             allowCredentials: true
       routes:
         - id: gestion_academica_route
-          uri: http://localhost:8081
+          uri: lb://BUSINESSDOMAIN-GESTION-ACADEMICA
           predicates:
             - Path=/api/v1/academica/**
+          filters:
+            - RewritePath=/api/v1/academica/(?<remaining>.*), /api/$\{remaining}
             
         - id: asistencia_conducta_route
-          uri: http://localhost:8082
+          uri: lb://BUSINESSDOMAIN-ASISTENCIA-CONDUCTA
           predicates:
             - Path=/api/v1/conducta/**
-
+          filters:
+            - RewritePath=/api/v1/conducta/(?<remaining>.*), /api/$\{remaining}
 eureka:
   client:
     serviceUrl:

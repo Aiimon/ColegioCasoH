@@ -1,63 +1,36 @@
 package cl.cbo.gestion_academica.entities;
 
+import cl.cbo.gestion_academica.shared.TipoRol;
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 @Entity
 @Table(name = "usuarios")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true, length = 100)
+    @Column(nullable = false, unique = true, length = 150)
     private String email;
 
-    @Column(nullable = false, length = 255) // Largo para soportar hashing de contraseñas (BCrypt)
+    // length = 60 es el tamaño estándar que requiere el algoritmo BCrypt para almacenar claves encriptadas
+    @Column(nullable = false, length = 60) 
     private String password;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
-    private Rol rol;
+    private TipoRol rol;
 
-    @Column(name = "activo", nullable = false)
+    @Column(nullable = false)
     private boolean activo = true;
-
-    @Column(name = "fecha_creacion")
-    private LocalDateTime fechaCreacion;
-
-    @PrePersist
-    protected void onCreate() {
-        this.fechaCreacion = LocalDateTime.now();
-    }
-
-    // Constructores
-    public Usuario() {}
-
-    public Usuario(String email, String password, Rol rol) {
-        this.email = email;
-        this.password = password;
-        this.rol = rol;
-        this.activo = true;
-    }
-
-    // Getters y Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
-
-    public Rol getRol() { return rol; }
-    public void setRol(Rol rol) { this.rol = rol; }
-
-    public boolean isActivo() { return activo; }
-    public void setActivo(boolean activo) { this.activo = activo; }
-
-    public LocalDateTime getFechaCreacion() { return fechaCreacion; }
-    public void setFechaCreacion(LocalDateTime fechaCreacion) { this.fechaCreacion = fechaCreacion; }
+    
+    @Column(name = "persona_referencia_id")
+    private Long personaReferenciaId;
 }

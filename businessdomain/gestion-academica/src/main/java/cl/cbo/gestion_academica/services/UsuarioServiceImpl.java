@@ -2,7 +2,6 @@ package cl.cbo.gestion_academica.services;
 
 import cl.cbo.gestion_academica.entities.Usuario;
 import cl.cbo.gestion_academica.repositories.UsuarioRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,8 +11,11 @@ import java.util.Optional;
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+    private final UsuarioRepository usuarioRepository;
+
+    public UsuarioServiceImpl(UsuarioRepository usuarioRepository) {
+        this.usuarioRepository = usuarioRepository;
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -24,14 +26,13 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     @Transactional
     public Usuario registrarUsuario(Usuario usuario) {
-        // Regla de Negocio: Validar que el correo institucional no esté duplicado
         if (usuarioRepository.existsByEmail(usuario.getEmail())) {
             throw new RuntimeException("El correo institucional ya se encuentra registrado.");
         }
-        
-        // NOTA: Más adelante, aquí aplicarás la encriptación de contraseñas de Spring Security:
+
+        // futuro:
         // usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
-        
+
         return usuarioRepository.save(usuario);
     }
 
